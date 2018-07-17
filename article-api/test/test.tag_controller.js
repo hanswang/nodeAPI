@@ -22,8 +22,12 @@ describe('Tag Controller search', function() {
                         };
                     });
                     return Promise.resolve(resArcs);
-                } else {
+                } else if (cond.date === '2017-07-08') {
                     return Promise.resolve([]);
+                } else if (cond.date === '2017-07-09') {
+                    return Promise.reject({ kind: 'ObjectId' });
+                } else {
+                    return Promise.reject('internal error');
                 }
             }
         };
@@ -106,6 +110,38 @@ describe('Tag Controller search', function() {
             expect(res._isEndCalled()).to.be.true;
             expect(respData).to.eql({
                 message: 'Articles not found with date 20170708'
+            });
+            done();
+        });
+        this.tags.findAll(this.req, this.res);
+    });
+
+    it('get article failed, no article found rejected', function(done) {
+        this.req.params.date = '20170709';
+
+        const res = this.res;
+        res.on('end', function() {
+            const respData = res._getData();
+            expect(res.statusCode).to.equal(404);
+            expect(res._isEndCalled()).to.be.true;
+            expect(respData).to.eql({
+                message: 'Articles not found with tagname t6 and date 20170709'
+            });
+            done();
+        });
+        this.tags.findAll(this.req, this.res);
+    });
+
+    it('get article failed, internal error', function(done) {
+        this.req.params.date = '20170710';
+
+        const res = this.res;
+        res.on('end', function() {
+            const respData = res._getData();
+            expect(res.statusCode).to.equal(500);
+            expect(res._isEndCalled()).to.be.true;
+            expect(respData).to.eql({
+                message: 'Error in retrieving articles with tagname t6 and date 20170710'
             });
             done();
         });

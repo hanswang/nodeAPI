@@ -13,8 +13,11 @@ describe('Article Controllers save', function() {
             useCleanCache: true
         });
 
-        const artickStub = function() {
+        const artickStub = function(initialData) {
             this.save = () => {
+                if (initialData.title === 'cannot save in mdb') {
+                    return Promise.reject({ message: 'internal error' });
+                }
                 return Promise.resolve({message: 'saved in success'});
             };
         };
@@ -116,6 +119,22 @@ describe('Article Controllers save', function() {
             const respData = res._getData();
             expect(res._isEndCalled()).to.be.true;
             expect(respData.message).to.be.equal('Article tags not set');
+            done();
+        });
+        this.articles.create(this.req, this.res);
+    });
+
+    it('save article failed, internal error', function(done) {
+        this.req.body.title = 'cannot save in mdb';
+
+        const res = this.res;
+        res.on('end', function() {
+            const respData = res._getData();
+            expect(res.statusCode).to.be.equal(500);
+            expect(res._isEndCalled()).to.be.true;
+            expect(respData).to.be.eql({
+                message: 'internal error'
+            });
             done();
         });
         this.articles.create(this.req, this.res);

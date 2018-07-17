@@ -14,11 +14,15 @@ describe('Article Controllers fetch', function() {
         });
 
         const findStub = {
-            findOne: (cond, select) => {
+            findOne: (cond) => {
                 if (cond.id === 123) {
-                    return Promise.resolve(select);
-                } else {
+                    return Promise.resolve('Found');
+                } else if (cond.id === 321) {
                     return Promise.resolve('');
+                } else if (cond.id === 456) {
+                    return Promise.reject({ kind: 'ObjectId' });
+                } else {
+                    return Promise.reject('internal error');
                 }
             }
         };
@@ -61,7 +65,7 @@ describe('Article Controllers fetch', function() {
             const respData = res._getData();
             expect(res.statusCode).to.equal(200);
             expect(res._isEndCalled()).to.be.true;
-            expect(respData).to.equal('-_id id title date body tags');
+            expect(respData).to.equal('Found');
             done();
         });
         this.articles.findOne(this.req, this.res);
@@ -77,6 +81,38 @@ describe('Article Controllers fetch', function() {
             expect(res._isEndCalled()).to.be.true;
             expect(respData).to.eql({
                 message: 'Article not found with id 321'
+            });
+            done();
+        });
+        this.articles.findOne(this.req, this.res);
+    });
+
+    it('get article failed, empty id', function(done) {
+        this.req.params.id = 456;
+
+        const res = this.res;
+        res.on('end', function() {
+            const respData = res._getData();
+            expect(res.statusCode).to.equal(404);
+            expect(res._isEndCalled()).to.be.true;
+            expect(respData).to.eql({
+                message: 'Article not found with id 456'
+            });
+            done();
+        });
+        this.articles.findOne(this.req, this.res);
+    });
+
+    it('get article failed, internal error', function(done) {
+        this.req.params.id = 654;
+
+        const res = this.res;
+        res.on('end', function() {
+            const respData = res._getData();
+            expect(res.statusCode).to.equal(500);
+            expect(res._isEndCalled()).to.be.true;
+            expect(respData).to.eql({
+                message: 'Error retrieving article with id 654'
             });
             done();
         });
