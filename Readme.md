@@ -61,10 +61,20 @@ First part of test start with unit testing. Just use `npm` below,
 
 	npm run test:unit
     
-This unit test is covering every model & controller we have created so far.
+This unit test is covering every model & controller we have created so far. And we have mocked the database using `sinon` and `mockery` (for runtime dependency injection). Also we choose `node-mocks-http` as testing framework to mock HTTP server.
 
 ##### API test
 As extension of testing after unit test, API testing is created in aspects of end-to-end covering what has been invoked during the process. To run this, it actually starts a server, and connects to mongoDB in the backend, try to test on the given URL endpoints and expects the results to be either successfully inserted, or successfully fetched. To invoke, run
 
 	npm run test:api
 
+##### Coverage
+Best part comes last, the `istanbul` package provides handy tool to track how well unit-tests exercise the codebase. So we simple add `nyc` into the package repo and added on top of `mocha`.
+
+	"test:api": "nyc mocha --exit \"./test/apiTest.*.js\"",
+    "test:unit": "nyc mocha \"./test/test.*.js\"",
+    
+To combine things together, we have
+
+	npm run test 
+    # equivalent to npm run test:unit && npm run test:api
