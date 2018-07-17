@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "lint": "eslint --ext js --format html . > eslint_report.html",
-    "test:api": "mocha --exit \"./test/apiTest.*.js\"",
+    "test:api": "nyc mocha --exit \"./test/apiTest.*.js\"",
     "test:unit": "nyc mocha \"./test/test.*.js\"",
     "test": "npm run test:api && npm run test:unit",
     "start": "node server.js"
