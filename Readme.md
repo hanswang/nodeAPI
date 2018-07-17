@@ -8,12 +8,13 @@ This is a simple Proof-Of-Concept code repo to demonstrate a set of RESTful API 
 
 ## Usage
 
-Start `mongodb` with `docker`:
+Start `mongodb` with `docker` on top level of cloned repo:
 
-	docker run -d -p 27017:27017 -v <repo>/data:/data/db mongo
+    # replace <repo_path> with actual path of the repo
+	docker run -d -p 27017:27017 -v <repo_path>/data:/data/db mongo
 
     
-Just use npm:
+Just use npm in sub-folder of `./article-api`:
 
 	npm install
     npm start
