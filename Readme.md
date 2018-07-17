@@ -11,10 +11,7 @@ This is a simple Proof-Of-Concept code repo to demonstrate a set of RESTful API 
 Start `mongodb` with `docker`:
 
 	docker run -d -p 27017:27017 -v <repo>/data:/data/db mongo
-    
-Choose a DB name:
 
-	use articleDB
     
 Just use npm:
 
@@ -48,7 +45,14 @@ Just use npm:
                    |     MongoDB     |
                    +-----------------+
                    
-                   
+
+Above is the simple diagram to illustrate the architecture details of this repo code. To put it in a simple way, 
+
+* The underlying data schema is using MongoDB to store JSON formatted data as article data definition.
+* Mongoose is chosen to map article db with article model in NodeJs to handle database in ORM mode
+* On top of Model, its standard MVC-like design. So we have controllers to handle the process on Model
+* On user end, we have routes build-up on ExpressJs API to wire controller action with API endpoints
+
 ## Testing
 
 ##### Lint
